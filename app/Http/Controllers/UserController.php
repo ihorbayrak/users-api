@@ -30,9 +30,7 @@ class UserController extends ResponseController
             )
         );
 
-        return $this->responseOk([
-            new UsersCollection($users)
-        ]);
+        return response()->json(new UsersCollection($users));
     }
 
     public function show($userId, Request $request)

@@ -19,7 +19,7 @@ class UserService
 
     public function list(PaginateQueryParams $dto)
     {
-        $users = User::query()->latest();
+        $users = User::query()->with(['position'])->latest();
 
         $page = $dto->page ?? (int)floor($dto->offset / $dto->count) + 1;
 

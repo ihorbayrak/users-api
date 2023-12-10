@@ -2,9 +2,11 @@
 
 namespace App\Http\Resources;
 
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class UserResource extends JsonResource
 {
@@ -18,7 +20,7 @@ class UserResource extends JsonResource
             'position' => $this->resource->position->name,
             'position_id' => $this->resource->position_id,
             'registration_timestamp' => Carbon::parse($this->resource->created_at)->timestamp,
-            'photo' => $this->resource->photo,
+            'photo' => Storage::url(User::PHOTOS_FOLDER.'/'.$this->resource->photo),
         ];
     }
 }

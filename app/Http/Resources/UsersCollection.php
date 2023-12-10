@@ -14,6 +14,7 @@ class UsersCollection extends ResourceCollection
         $paginator = $this->resource->toArray();
 
         return [
+            'success' => true,
             'page' => $paginator['current_page'],
             'total_pages' => $paginator['last_page'],
             'total_users' => $paginator['total'],
