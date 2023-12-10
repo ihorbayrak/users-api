@@ -8,16 +8,20 @@ use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\UsersListRequest;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\UsersCollection;
+use App\Services\TokenService\TokenService;
 use App\Services\UserService\UserService;
+use Illuminate\Http\Request;
 
 class UserController extends ResponseController
 {
-    public function __construct(private UserService $userService)
+    public function __construct(private UserService $userService, private TokenService $tokenService)
     {
     }
 
     public function index(UsersListRequest $request)
     {
+        $this->tokenService->validateToken($request->header('Token'));
+
         $users = $this->userService->list(
             new PaginateQueryParams(
                 count: $request->getCount(),
@@ -31,8 +35,10 @@ class UserController extends ResponseController
         ]);
     }
 
-    public function show($userId)
+    public function show($userId, Request $request)
     {
+        $this->tokenService->validateToken($request->header('Token'));
+
         $user = $this->userService->specific($userId);
 
         return $this->responseOk([
@@ -42,6 +48,8 @@ class UserController extends ResponseController
 
     public function store(CreateUserRequest $request)
     {
+        $this->tokenService->validateToken($request->header('Token'));
+
         $user = $this->userService->create(
             new CreateUserData(
                 name: $request->get('name'),
