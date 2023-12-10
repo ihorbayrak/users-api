@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
 use App\DTO\CreateUserData;
 use App\DTO\PaginateQueryParams;
@@ -10,7 +10,6 @@ use App\Http\Resources\UserResource;
 use App\Http\Resources\UsersCollection;
 use App\Services\TokenService\TokenService;
 use App\Services\UserService\UserService;
-use Illuminate\Http\Request;
 
 class UserController extends ResponseController
 {
@@ -20,8 +19,6 @@ class UserController extends ResponseController
 
     public function index(UsersListRequest $request)
     {
-        $this->tokenService->validateToken($request->header('Token'));
-
         $users = $this->userService->list(
             new PaginateQueryParams(
                 count: $request->getCount(),
@@ -33,10 +30,8 @@ class UserController extends ResponseController
         return response()->json(new UsersCollection($users));
     }
 
-    public function show($userId, Request $request)
+    public function show($userId)
     {
-        $this->tokenService->validateToken($request->header('Token'));
-
         $user = $this->userService->specific($userId);
 
         return $this->responseOk([

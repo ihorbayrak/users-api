@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
 use App\Services\TokenService\TokenService;
-use Illuminate\Http\Request;
 
 class TokenController extends ResponseController
 {
