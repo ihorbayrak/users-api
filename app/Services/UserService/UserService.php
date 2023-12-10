@@ -2,13 +2,21 @@
 
 namespace App\Services\UserService;
 
+use App\DTO\CreateUserData;
 use App\DTO\PaginateQueryParams;
 use App\Models\User;
+use App\Services\UserService\Actions\StorePhotoAction;
+use App\Services\UserService\Exceptions\EmailAlreadyExistsException;
 use App\Services\UserService\Exceptions\IncorrectUserIdException;
+use App\Services\UserService\Exceptions\PhoneAlreadyExistsException;
 use App\Services\UserService\Exceptions\UserNotFoundException;
 
 class UserService
 {
+    public function __construct(private StorePhotoAction $storePhoto)
+    {
+    }
+
     public function list(PaginateQueryParams $dto)
     {
         $users = User::query()->latest();
@@ -39,5 +47,31 @@ class UserService
         }
 
         return $user;
+    }
+
+    public function create(CreateUserData $dto)
+    {
+        $emailExists = User::where('email', $dto->email)->first();
+
+        if ($emailExists) {
+            throw new EmailAlreadyExistsException();
+        }
+
+        $phoneExists = User::where('phone', $dto->phone)->first();
+
+        if ($phoneExists) {
+            throw new PhoneAlreadyExistsException();
+        }
+
+        $name = ucwords(strtolower($dto->name));
+        $photo = $this->storePhoto->handle($dto->photo, User::PHOTOS_FOLDER);
+
+        return User::create([
+            'name' => $name,
+            'email' => $dto->email,
+            'phone' => $dto->phone,
+            'position_id' => $dto->position_id,
+            'photo' => $photo
+        ]);
     }
 }

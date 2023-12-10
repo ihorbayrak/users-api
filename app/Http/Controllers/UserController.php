@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\DTO\CreateUserData;
 use App\DTO\PaginateQueryParams;
+use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\UsersListRequest;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\UsersCollection;
@@ -35,6 +37,24 @@ class UserController extends ResponseController
 
         return $this->responseOk([
             'user' => new UserResource($user)
+        ]);
+    }
+
+    public function store(CreateUserRequest $request)
+    {
+        $user = $this->userService->create(
+            new CreateUserData(
+                name: $request->get('name'),
+                email: $request->get('email'),
+                phone: $request->get('phone'),
+                position_id: $request->get('position_id'),
+                photo: $request->file('photo')
+            )
+        );
+
+        return $this->responseCreated([
+            "user_id" => $user->id,
+            "message" => "New user successfully registered"
         ]);
     }
 }

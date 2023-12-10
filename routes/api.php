@@ -11,5 +11,6 @@ Route::controller(UserController::class)->group(function () {
     Route::name('users.')->group(function () {
         Route::get('/users', 'index')->name('list');
         Route::get('/users/{user}', 'show')->name('specific');
+        Route::post('/users', 'store')->name('create');
     });
 });
