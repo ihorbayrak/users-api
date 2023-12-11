@@ -21,7 +21,7 @@ class CreateUserRequest extends BaseRequest
             'position_id' => ['required', 'integer', 'min:1', Rule::exists('positions', 'id')],
             'photo' => [
                 'required',
-                "mimes:${$jpg},${$jpeg}",
+                "mimes:{$jpg},{$jpeg}",
                 File::image()
                     ->max(5 * 1024)
                     ->dimensions(
